@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, ensureDatabase } from '@/lib/db';
 import { users, statusHistory } from '@/lib/schema';
 import { VALID_STATUSES } from '@/lib/statuses';
 import { eq } from 'drizzle-orm';
 
 export async function GET() {
   try {
+    await ensureDatabase;
     const allUsers = await db.select().from(users);
     
     const formattedUsers = allUsers.map(user => ({
@@ -25,6 +26,7 @@ export async function GET() {
 
 export async function PUT(req: Request) {
   try {
+    await ensureDatabase;
     const body = await req.json();
     const { userId, status } = body;
 
